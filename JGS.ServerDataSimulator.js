@@ -16,19 +16,20 @@
     // add timestamp to the request (instead of a string date representation)
     dataLoadReq.startDate = dataLoadReq.startDateTm.getTime();
     dataLoadReq.endDate = dataLoadReq.endDateTm.getTime();
+    var cbclass = this;
 
-	$.ajax({
-		url: "ajax.php",
-		type: "POST",
-		dataType: "json",
-		async: false,
-		data: dataLoadReq,
+    $.ajax({
+	url: "ajax.php",
+	type: "POST",
+	dataType: "json",
+	async: true,
+	data: dataLoadReq,
         success: function(dataPoints) {
-		    if (dataPoints) {
+               if (dataPoints) {
                console.log('response: '); console.log(dataPoints);
-               setTimeout($.proxy(this._onDataLoad, this, dataLoadReq, dataPoints), 0.001); // TODO remove
-		       // this doesn't work // this._onDataLoad(dataLoadReq, dataPoints);
-		    }
+               var dataLoadResp = { dataPoints: dataPoints };
+               cbclass.onServerDataLoadCallbacks.fire(dataLoadReq, dataLoadResp);
+	       }
         }
      });
 
